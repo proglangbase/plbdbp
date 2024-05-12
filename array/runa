@@ -1,0 +1,2 @@
+#!/bin/sh
+apl -s -f plbarray.apl
