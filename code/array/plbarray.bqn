@@ -5,6 +5,9 @@
 #   License, v. 2.0. If a copy of the MPL was not distributed with this
 #   file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
+#   ˜˘¨⁼⌜´˝7∞¯•÷×   ¬⎉⚇⍟◶⊘⎊⍎⍕⟨⟩√⋆   ⌽𝕨∊↑∧y⊔⊏⊐π←→    ↙𝕎⍷𝕣⍋YU⊑⊒⍳⊣⊢
+#   ⍉𝕤↕𝕗𝕘⊸∘○⟜⋄↩\    ↖𝕊D𝔽𝔾«J⌾»·˙|    ⥊𝕩↓∨⌊n≡∾≍≠      ⋈𝕏C⍒⌈N≢≤≥⇐
+#
 plb_lang_head ← ⟨
   "lang"              ,"aka"    ,"ance"        ,"para"   ,"type"   ,"mac"    ,"mem"    ,""
 ⟩
@@ -15,7 +18,7 @@ plb_lang_data ← ⟨∘,≠plb_lang_head⟩ ⥊ plb_lang_head ∾ ⟨
   "C"                 ,""       ,"C"          ,"p"      ,"sw"     ,"pp"     ,"alo"    ,""
   "C++"               ,""       ,"C"          ,"op"     ,"ss"     ,"pp"     ,"alo"    ,""
   "Clojure"           ,""       ,"Lisp"       ,"f"      ,"dw"     ,""       ,"gc"     ,""
-  "CommonLisp"        ,"CL"     ,"Lisp"       ,"f"      ,"dw"     ,""       ,"gc"     ,""
+  "Commonlisp"        ,"CL"     ,"Lisp"       ,"f"      ,"dw"     ,""       ,"gc"     ,""
   "Elixir"            ,""       ,"Ruby"       ,"f"      ,"dw"     ,""       ,"gc"     ,""
   "Erlang"            ,""       ,"Prolog"     ,"f"      ,"ds"     ,"pp"     ,"gc"     ,""
   "F#"                ,""       ,"ML"         ,"f"      ,"ds"     ,""       ,"gc"     ,""
@@ -38,4 +41,36 @@ plb_lang_data ← ⟨∘,≠plb_lang_head⟩ ⥊ plb_lang_head ∾ ⟨
   "Uiua"              ,""       ,"APL"        ,"a"      ,"ds"     ,""       ,"gc"     ,""
   "Zig"               ,""       ,"C"          ,"p"      ,"ss"     ,"ct"     ,"alo"    ,""
 ⟩
-•Show plb_lang_data
+nl              ← @+10
+htmlDocType     ← "<!DOCTYPE html>"∾nl
+HtmlTitle       ← ("  <title>"⊸∾∾⟜("</title>"∾nl))
+HtmlHead        ← (("<head>"∾nl)⊸∾∾⟜("</head>"∾nl))HtmlTitle
+HtmlBody        ← (("<body>"∾nl)⊸∾∾⟜("</body>"∾nl))
+HtmlH1          ← ("  <h1>"⊸∾∾⟜("</h1>"∾nl))
+HtmlTable       ← (("  <table>"∾nl)⊸∾∾⟜("</table>"∾nl))
+HtmlTableData   ← ("<td>"⊸∾∾⟜"</td>")
+HtmlTableDatas  ← ∾HtmlTableData⚇1
+HtmlTableRow    ← ("    <tr>"⊸∾∾⟜"</tr>")HtmlTableDatas
+HtmlTableRows   ← ∾(<∘∾⟜nl∘HtmlTableRow)˘
+HtmlDoc         ← {
+  htmlDocType∾"<html>"∾nl∾(HtmlHead𝕨)∾(HtmlBody((HtmlH1𝕨)∾(HtmlTable𝕩)))∾"</html>"∾nl
+}
+#•Show   plb_lang_head
+#•Show ≢ plb_lang_head
+#•Show ⊑ plb_lang_head
+#•Show HtmlTableRow plb_lang_head
+#•Show   plb_lang_data
+#•Show ≢ plb_lang_data
+#•Show  ˘plb_lang_data
+#•Show ≢˘plb_lang_data
+#•Show ⊏ plb_lang_data
+#•Show ⊏˘plb_lang_data
+#•Out HtmlTableRows plb_lang_data
+•Out "proglangbase" HtmlDoc (HtmlTableRows plb_lang_data)
+#•Show plb_lang_data
+#•Out HtmlTableRows plb_lang_data
+•Exit 0
+#
+#   ˜˘¨⁼⌜´˝7∞¯•÷×   ¬⎉⚇⍟◶⊘⎊⍎⍕⟨⟩√⋆   ⌽𝕨∊↑∧y⊔⊏⊐π←→    ↙𝕎⍷𝕣⍋YU⊑⊒⍳⊣⊢
+#   ⍉𝕤↕𝕗𝕘⊸∘○⟜⋄↩\    ↖𝕊D𝔽𝔾«J⌾»·˙|    ⥊𝕩↓∨⌊n≡∾≍≠      ⋈𝕏C⍒⌈N≢≤≥⇐
+#
