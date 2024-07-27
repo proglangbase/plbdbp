@@ -1,4 +1,5 @@
 .DS_Store
 .apl.history
+erl_crash.dump
 *.beam
 *.swp
