@@ -1,3 +1,12 @@
 #!/usr/bin/env bqn
-{nopipes⇐1}•SH⟨"erlsame","plbweb","posteval:make:files(["∾'"'∾•path∾"/plbdb"∾'"'∾"]).","posteval:plbdb:acquire()."⟩
+{nopipes⇐1}•SH⟨
+  "./erlsame",
+  "plbweb",
+  "posteval:c:cd("∾'"'∾•path∾'"'∾").",
+  "posteval:c:ls().",
+  "posteval:make:all().",
+  "posteval:c:l(plbdb).",
+  "posteval:plbdb:acquire()."
+  "posteval:c:cd("∾'"'∾•wdpath∾'"'∾").",
+⟩
 •Exit 0
