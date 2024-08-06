@@ -12,20 +12,24 @@ acquire() ->
     _ -> spawn(?MODULE, init, [])
   end.
 
-init() -> register(?NAME_SINGLETON, self()), loop().
+init() ->
+  register(?NAME_SINGLETON, self()),
+  {ok,_Log} = disk_log:open([{name,?NAME_SINGLETON},{type,wrap},{size,{999999,9}}]),
+  loop().
 
 loop() ->
   receive
-    {html,Route,Ref,Pid} -> io:fwrite("html called from ~p~n", [Pid]),
-                            Pid ! {html,html(Route),Ref,self()},  loop();
-    {ping,Pid} -> log("pingged by ~p~n.", Pid), Pid ! pong,       loop();
-    {stop,Pid} -> log("stopped by ~p~n.", Pid),                   ok;
-    Msg        -> log("unknown message ~p~n.", [Msg]),            loop()
+    {html,Route,Ref,Pid} ->
+                  Pid ! {html,html(Route),Ref,self()},
+                  log("html called from ~p~n", [Pid]),      loop();
+    {ping,Pid} -> log("pingged by ~p~n.", Pid), Pid ! pong, loop();
+    {stop,Pid} -> log("stopped by ~p~n.", Pid), disk_log:close(), ok;
+    Msg        -> log("unknown message ~p~n.", [Msg]),      loop()
   end.
 
-log(Format, Values) -> io:fwrite(
-  atom_to_list(?NAME_SINGLETON) ++ " ~p: "
-  ++ Format, lists:flatten([self(), Values])).
+log(Format, Values) -> disk_log:alog(?NAME_SINGLETON,
+  io_lib:format(atom_to_list(?NAME_SINGLETON) ++ " ~p: "
+                ++ Format, lists:flatten([self(), Values]))).
 
 html(Route) -> os:cmd(
   "bqn " ++ filename:dirname(filename:dirname(
