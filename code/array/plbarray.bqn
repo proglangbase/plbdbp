@@ -43,14 +43,18 @@ plb_lang_data ← ⟨∘,≠plb_lang_head⟩ ⥊ plb_lang_head ∾ ⟨
 ⟩
 nl              ← @+10
 htmlDocType     ← "<!DOCTYPE html>"∾nl
-HtmlTitle       ← ("  <title>"⊸∾∾⟜("</title>"∾nl))
-HtmlHead        ← (("<head>"∾nl)⊸∾∾⟜("</head>"∾nl))HtmlTitle
-HtmlBody        ← (("<body>"∾nl)⊸∾∾⟜("</body>"∾nl))
-HtmlH1          ← ("  <h1>"⊸∾∾⟜("</h1>"∾nl))
-HtmlTable       ← (("  <table>"∾nl)⊸∾∾⟜("</table>"∾nl))
-HtmlTableData   ← ("<td>"⊸∾∾⟜"</td>")
+HtmlStyle       ← "style="∾'"'∾∾⟜'"'
+htmlStyleBorder ← HtmlStyle "border: 1px solid lightgray"
+HtmlTagAttrib   ← (("<"⊸∾⊣)∾⟜' ')∾(∾⟜">"⊢)
+htmlTagTd       ← "td" HtmlTagAttrib htmlStyleBorder
+HtmlTitle       ← "  <title>"⊸∾∾⟜("</title>"∾nl)
+HtmlHead        ← ("<head>"∾nl)⊸∾∾⟜("</head>"∾nl)⊢HtmlTitle
+HtmlBody        ← ("<body>"∾nl)⊸∾∾⟜("</body>"∾nl)
+HtmlH1          ← "  <h1>"⊸∾∾⟜("</h1>"∾nl)
+HtmlTable       ← ("  <table>"∾nl)⊸∾∾⟜("</table>"∾nl)
+HtmlTableData   ← htmlTagTd⊸∾∾⟜"</td>"
 HtmlTableDatas  ← ∾HtmlTableData⚇1
-HtmlTableRow    ← ("    <tr>"⊸∾∾⟜"</tr>")HtmlTableDatas
+HtmlTableRow    ← "    <tr>"⊸∾∾⟜"</tr>"⊢HtmlTableDatas
 HtmlTableRows   ← ∾(<∘∾⟜nl∘HtmlTableRow)˘
 HtmlDoc         ← {
   htmlDocType∾"<html>"∾nl∾(HtmlHead𝕨)∾(HtmlBody((HtmlH1𝕨)∾(HtmlTable𝕩)))∾"</html>"∾nl
