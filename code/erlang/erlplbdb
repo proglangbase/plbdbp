@@ -1,6 +1,3 @@
-#!/bin/sh
-if [ "$(which apl)" != "" ]; then
-  export LD_LIBRARY_PATH=$(apl --show_src_dir)/.libs
-fi
-##${0%/*}/erlsame plbweb 'posteval:make:all().' 'posteval:application:ensure_all_started(plbweb).'
-${0%/*}/erlsame plbweb 'posteval:make:all().' 'posteval:plbdb:acquire().'
+#!/usr/bin/env bqn
+{nopipes⇐1}•SH⟨"erlsame","plbweb","posteval:make:files(["∾'"'∾•path∾"/plbdb"∾'"'∾"]).","posteval:plbdb:acquire()."⟩
+•Exit 0
