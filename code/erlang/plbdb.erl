@@ -4,17 +4,20 @@
 -module(plbdb).
 -export([acquire/0,init/0]).
 
--define(NAME_SINGLETON, list_to_atom(atom_to_list(?MODULE)++"_single")).
+-define(MODULE_PATH         , filename:dirname(proplists:get_value(source, module_info(compile)))).
+-define(NAME_SINGLETON      , ?MODULE_STRING++"_single").
+-define(ATOM_SINGLETON      , list_to_atom(?NAME_SINGLETON)).
+-define(LOG_PATH            , ?MODULE_PATH++"/../../log/"++?NAME_SINGLETON).
 
 acquire() ->
-  case whereis(?NAME_SINGLETON) of
+  case whereis(?ATOM_SINGLETON) of
     Pid when is_pid(Pid) -> Pid;
     _ -> spawn(?MODULE, init, [])
   end.
 
 init() ->
-  register(?NAME_SINGLETON, self()),
-  {ok,_Log} = disk_log:open([{name,?NAME_SINGLETON},{type,wrap},{size,{999999,9}}]),
+  register(?ATOM_SINGLETON, self()),
+  {ok,_Log} = disk_log:open([{name,?LOG_PATH},{type,wrap},{size,{999999,9}}]),
   loop().
 
 loop() ->
@@ -27,8 +30,8 @@ loop() ->
     Msg        -> log("unknown message ~p~n.", [Msg]),      loop()
   end.
 
-log(Format, Values) -> disk_log:alog(?NAME_SINGLETON,
-  io_lib:format(atom_to_list(?NAME_SINGLETON) ++ " ~p: "
+log(Format, Values) -> disk_log:alog(?LOG_PATH,
+  io_lib:format(?NAME_SINGLETON ++ " ~p: "
                 ++ Format, lists:flatten([self(), Values]))).
 
 html(Route) -> os:cmd(
