@@ -1,14 +1,16 @@
 %%
 %%  Copyright © 2024 Christopher Augustus. All rights reserved.
 %%
--module(plbdb).
+-module(plbdb_sm).
 -export([acquire/0,init/0]).
 
 -define(MODULE_PATH         , filename:dirname(proplists:get_value(source, module_info(compile)))).
--define(NAME_SINGLETON      , ?MODULE_STRING++"_single").
+-define(NAME_SINGLETON      , "plbdb_single").
 -define(ATOM_SINGLETON      , list_to_atom(?NAME_SINGLETON)).
 -define(LOG_PATH            , ?MODULE_PATH++"/../../log/"++?NAME_SINGLETON).
--define(HTML_CMD_FMT        , "bqn "++?MODULE_PATH++"/../array/plbarray.bqn ~p").
+-define(BQN_CMD_FMT         , "bqn "++?MODULE_PATH++"/../array/plbdata.bqn").
+-define(PERL_CMD_FMT        , "perl "++?MODULE_PATH++"/../array/plbhtml.pl").
+-define(HTML_CMD_FMT        , ?BQN_CMD_FMT++" ~p | "++?PERL_CMD_FMT).
 
 acquire() ->
   case whereis(?ATOM_SINGLETON) of
