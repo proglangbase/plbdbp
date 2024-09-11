@@ -1,0 +1,50 @@
+#!/usr/bin/env escript
+-mode(compile).
+-include("../../plbcom/code/erlang/config.hrl").
+
+main([Cmd]) ->
+  make:all([{emake, ['../../plbcom/code/erlang/plb*', '*']}]),
+  c:l(plb_com),
+  try 
+    plb_ctl:init(?THIS_NODE),
+    case list_to_atom(string:lowercase(Cmd)) of
+      start      -> start(plbdb);
+      start_perl -> start(plbdb_perl);
+      stop       -> stop();
+      restart    -> restart(plbdb);
+      status     -> status();
+      _          -> main([])
+    end,
+    halt(0)
+  catch 
+    {error,  Info} -> plb_ctl:report(io_lib:format("error: ~p", [Info])),     halt(1);
+    {Source, Msg}  -> plb_ctl:report(io_lib:format("~p: ~s", [Source, Msg])), halt(1)
+  end;
+
+main(_) -> io:format("usage:~n", []).
+
+start(Module) ->
+  case plb_ctl:start_node(?DB_NODE_NAME, ?DB_NODE_COOKIE) of
+    already_running ->
+      plb_ctl:report(?DB_NODE_SNAME ++ " already running");
+    ok ->
+      plb_ctl:rpc(?DB_NODE_NAME, Module, acquire, []),
+      status()
+  end.
+
+stop() ->
+  plb_ctl:stop_node(?DB_NODE_NAME, ?DB_NODE_COOKIE),
+  status().
+
+restart(Module) ->
+  case plb_ctl:is_node_running(?DB_NODE_NAME) of 
+    true -> stop(); 
+    _ -> ok 
+  end,
+  start(Module).
+
+status() ->
+  case plb_ctl:is_node_running(?DB_NODE_NAME) of 
+    true  -> plb_ctl:report(?DB_NODE_SNAME ++ " is running");
+    false -> plb_ctl:report(?DB_NODE_SNAME ++ " not running") 
+  end.
