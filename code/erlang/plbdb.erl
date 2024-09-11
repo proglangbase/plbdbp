@@ -7,7 +7,7 @@
 
 -define(SERVICE_NAME,   ?DB_SERVICE_NAME).
 -define(SERVICE_STRING, atom_to_list(?SERVICE_NAME)).
--define(ROOT_PATH,      ?MODULE_PATH++"/../..").
+-define(ROOT_PATH,      ?SOURCE_PATH++"/../..").
 -define(LOG_PATH,       io_lib:format("~s/log/~s.log", [?ROOT_PATH, ?SERVICE_STRING])).
 -define(BQN_CMD,        io_lib:format("bqn ~s/code/array/plbarray.bqn", [?ROOT_PATH])).
 -define(HTML_CMD_FMT,   ?BQN_CMD ++ " ~p").
@@ -17,11 +17,14 @@ acquire() -> acquire(?MODULE).
 acquire(Module) ->
   case global:whereis_name(?SERVICE_NAME) of
     Pid when is_pid(Pid) -> Pid;
-    _ ->
-      Log = logger(?LOG_PATH),
-      Log("~s:start", [Module]),
-      spawn(?MODULE, start, [Module])
+    _ -> init(Module)
   end.
+
+init(Module) ->
+  filelib:ensure_dir(?LOG_PATH),
+  Log = logger(?LOG_PATH),
+  Log("~s:start", [Module]),
+  spawn(?MODULE, start, [Module]).
 
 html(Route) ->
   os:cmd(io_lib:format(?HTML_CMD_FMT, [Route])).

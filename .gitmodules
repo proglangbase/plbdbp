@@ -1,0 +1,3 @@
+[submodule "plbcom"]
+	path = plbcom
+	url = git@gitlab.com:proglangbase/plbcom.git
