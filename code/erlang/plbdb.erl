@@ -3,7 +3,7 @@
 %%
 -module(plbdb).
 -export([acquire/0, acquire/1, html/1, start/1]).
--include("../../plbcom/code/erlang/config.hrl").
+-include("../../dep/plbcom/code/erlang/config.hrl").
 
 -define(SERVICE_NAME,   ?DB_SERVICE_NAME).
 -define(SERVICE_STRING, atom_to_list(?SERVICE_NAME)).

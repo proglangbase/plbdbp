@@ -3,7 +3,7 @@
 %%
 -module(plbdb_perl).
 -export([acquire/0, html/1]).
--include("../../plbcom/code/erlang/config.hrl").
+-include("../../dep/plbcom/code/erlang/config.hrl").
 
 -define(BQN_CMD_FMT,  "bqn " ++?SOURCE_PATH++"/../array/plbdata.bqn").
 -define(PERL_CMD_FMT, "perl "++?SOURCE_PATH++"/../array/plbhtml.pl").
