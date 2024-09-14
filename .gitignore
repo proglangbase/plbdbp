@@ -5,3 +5,5 @@ erl_crash.dump
 *.swp
 *.LOG.*
 log/
+# Works for folders and symlinks.
+_exe
