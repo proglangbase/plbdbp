@@ -1,7 +1,7 @@
 # plbdb
 
-ProgLangBase Database Service. Connects to PLB Web service and responds to
-requests for data model.
+proglangbase database service.
+Connects to plbweb and responds to requests for data.
 
 ### Dependencies
 
