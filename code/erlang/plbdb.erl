@@ -3,11 +3,12 @@
 %%
 -module(plbdb).
 -export([acquire/0, acquire/1, html/1, start/1]).
--include("../../dep/plbcom/code/erlang/config.hrl").
+-include("../../dep/plbcom/code/erlang/filename.hrl").
+-include("../../dep/plbcom/code/erlang/plbnames.hrl").
 
--define(SERVICE_NAME,   ?DB_SERVICE_NAME).
+-define(SERVICE_NAME,   ?PLB_NAME_SERVICE_DB).
 -define(SERVICE_STRING, atom_to_list(?SERVICE_NAME)).
--define(ROOT_PATH,      ?SOURCE_PATH++"/../..").
+-define(ROOT_PATH,      ?DIRNAME_SOURCE++"/../..").
 -define(LOG_PATH,       io_lib:format("~s/log/~s.log", [?ROOT_PATH, ?SERVICE_STRING])).
 -define(BQN_CMD,        io_lib:format("bqn ~s/code/array/plbarray.bqn", [?ROOT_PATH])).
 -define(HTML_CMD_FMT,   ?BQN_CMD ++ " ~p").
@@ -52,9 +53,9 @@ looper(Log, Module) ->
 
 start(Module) ->
   Log = logger(?LOG_PATH),
-  Log("connecting to ~s", [?WEB_NODE_NAME]),
+  Log("connecting to ~s", [?PLB_NAME_NODE_WEB]),
   try
-    plb_ctl:connect_node(?WEB_NODE_NAME, ?WEB_NODE_COOKIE),
+    plb_ctl:connect_node(?PLB_NAME_NODE_WEB, ?PLB_COOKIE_NODE_WEB),
     global:register_name(?SERVICE_NAME, self()),
     Log("service started", []),
     Loop = looper(Log, Module),
@@ -63,5 +64,3 @@ start(Module) ->
     {error,  Info} -> Log("error: ~p", [Info]);
     {Source, Msg}  -> Log("~p: ~p", [Source, Msg])
   end.
-
-

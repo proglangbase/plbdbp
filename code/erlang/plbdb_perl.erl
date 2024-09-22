@@ -1,12 +1,12 @@
 %%
-%%  Copyright © 2024 Christopher Augustus. All rights reserved.
+%%  Copyright © 2024 Steve Thames. All rights reserved.
 %%
 -module(plbdb_perl).
 -export([acquire/0, html/1]).
--include("../../dep/plbcom/code/erlang/config.hrl").
+-include("../../dep/plbcom/code/erlang/filename.hrl").
 
--define(BQN_CMD_FMT,  "bqn " ++?SOURCE_PATH++"/../array/plbdata.bqn").
--define(PERL_CMD_FMT, "perl "++?SOURCE_PATH++"/../array/plbhtml.pl").
+-define(BQN_CMD_FMT,  "bqn " ++?DIRNAME_SOURCE++"/../array/plbdata.bqn").
+-define(PERL_CMD_FMT, "perl "++?DIRNAME_SOURCE++"/../array/plbhtml.pl").
 -define(HTML_CMD_FMT, ?BQN_CMD_FMT++" ~p | "++?PERL_CMD_FMT).
 
 acquire() -> plbdb:acquire(?MODULE).
