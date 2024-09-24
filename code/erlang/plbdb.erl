@@ -10,7 +10,7 @@
 -define(SERVICE_STRING, atom_to_list(?SERVICE_NAME)).
 -define(ROOT_PATH,      ?DIRNAME_SOURCE++"/../..").
 -define(LOG_PATH,       io_lib:format("~s/log/~s.log", [?ROOT_PATH, ?SERVICE_STRING])).
--define(BQN_CMD,        io_lib:format("bqn ~s/code/array/plbarray.bqn", [?ROOT_PATH])).
+-define(BQN_CMD,        io_lib:format("bqn ~s/code/array/plbhtml.bqn", [?ROOT_PATH])).
 -define(HTML_CMD_FMT,   ?BQN_CMD ++ " ~p").
 
 acquire() -> acquire(?MODULE).
@@ -37,14 +37,13 @@ logger(Path) ->
     io:format(Log, Prefix++Format++"~n", Values)
   end.
 
-looper(Log, Module) -> 
+looper(Log, Module) ->
   fun Loop() ->
     receive
       {html,Route,Ref,Pid} ->
         Pid ! {html, Module:html(Route), Ref, self()},
-        Log("html called from ~p", [Pid]),     
+        Log("html called from ~p", [Pid]),
         Loop();
-
       {ping,Pid} -> Log("pinged by ~p",  [Pid]), Pid ! pong, Loop();
       {stop,Pid} -> Log("stopped by ~p", [Pid]);
       Msg        -> Log("unknown message: ~p", [Msg]), Loop()
