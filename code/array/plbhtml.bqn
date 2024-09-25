@@ -12,35 +12,38 @@ array ← •Import "plbarray.bqn"
 
 nl                    ← @+10
 
-HtRouteIndex          ← "/"⊸∾(•Fmt⊢)
-
 HtAttrHref            ← "href="∾'"'∾∾⟜'"'
-HtAttrStyle           ← "style="∾'"'∾∾⟜'"'
-htStyleBorder         ← HtAttrStyle "border: 1px solid lightgray"
+HtRouteIndex          ← "/"⊸∾(•Fmt⊢)
 HtTagAttr             ← (("<"⊸∾⊣)∾⟜' ')∾(∾⟜">"⊢)
-HtTagAnchor           ← "a"  HtTagAttr HtAttrHref
-#htTagTd               ← "td" HtTagAttr htStyleBorder
-htTagTd               ← "<td>"
+HtTagAnchor           ← "a" HtTagAttr HtAttrHref
 HtWrapAnchor          ← (HtTagAnchor⊣)∾(∾⟜"</a>"⊢)
-HtWrapBody            ← ("<body>"∾nl)⊸∾∾⟜("</body>"∾nl)
-HtWrapTitle           ← "  <title>"⊸∾∾⟜("</title>"∾nl)
-HtWrapHead            ← ("<head>"∾nl)⊸∾∾⟜("</head>"∾nl)⊢HtWrapTitle
-HtWrapH1              ← "  <h1>"⊸∾∾⟜("</h1>"∾nl)
-HtWrapTable           ← ("  <table>"∾nl)⊸∾∾⟜("</table>"∾nl)
-HtWrapTableData       ← htTagTd⊸∾∾⟜"</td>"
-HtWrapTableDatas      ← ∾HtWrapTableData⚇1
+HtWrapTableData       ← "<td>"⊸∾∾⟜"</td>"
 HtWrapTableRow        ← "    <tr>"⊸∾∾⟜("</tr>"∾nl)
 HtWrapTableRowAnchor  ← {<∘((HtRouteIndex𝕨)⊸HtWrapAnchor)⚇1∘⊑𝕩}
 #HtWrapTableRowAnchor  ← <∘((HtRouteIndex⊣)⊸HtWrapAnchor)⚇1∘⊑⊢
   # ^ @@@ TODO CANNOT FIGURE OUT HOW TO MAKE THIS TACIT
-HtWrapTableIndexedRow ← HtWrapTableRow⚇1∘<∘∾∘HtWrapTableDatas∘<∘(HtWrapTableRowAnchor∾1⊸↓)
+HtWrapTableRowData    ← ∾HtWrapTableData⚇1∘<∘(HtWrapTableRowAnchor∾1⊸↓)
+HtWrapTableIndexedRow ← HtWrapTableRow⚇1∘<∘∾∘HtWrapTableRowData
 IndexedRows           ← ↕∘≠⋈˘⊢
 HtWrapTableRows       ← ((⊑·>1⊸↑)HtWrapTableIndexedRow(⊑1⊸↓))˘IndexedRows
 HtTableFromArray      ← ∾HtWrapTableRows
-HtDoc                 ← {
-  "<!DOCTYPE ht>"∾nl∾"<ht>"∾nl∾(HtWrapHead𝕨)∾(HtWrapBody((HtWrapH1𝕨)∾(HtWrapTable𝕩)))∾"</ht>"∾nl
-}
-#•Show array.plb_lang_data
-#•Show HtWrapTableRows array.plb_lang_data
-•Out "proglangbase" HtDoc (HtTableFromArray array.plb_lang_data)
+
+htDoc ← "
+<!DOCTYPE html>
+<html>
+<head>
+  <title>proglangbase</title>
+  <style>
+    th, td { border: 1px solid lightgray }
+    th     { text-align: left }
+  </style>
+<body>
+  <h1>proglangbase</h1>
+  <table>
+"∾(HtTableFromArray array.plb_lang_data)∾"  </table>
+</body>
+</html>
+"
+
+•Out htDoc
 •Exit 0
