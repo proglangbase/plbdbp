@@ -8,7 +8,7 @@
 #   ˜˘¨⁼⌜´˝7∞¯•÷×   ¬⎉⚇⍟◶⊘⎊⍎⍕⟨⟩√⋆   ⌽𝕨∊↑∧y⊔⊏⊐π←→    ↙𝕎⍷𝕣⍋YU⊑⊒⍳⊣⊢
 #   ⍉𝕤↕𝕗𝕘⊸∘○⟜⋄↩\    ↖𝕊D𝔽𝔾«J⌾»·˙|    ⥊𝕩↓∨⌊n≡∾≍≠      ⋈𝕏C⍒⌈N≢≤≥⇐
 #
-array ← •Import "plbarray.bqn"
+plbarray ← •Import "plbarray.bqn"
 
 nl                    ← @+10
 
@@ -40,7 +40,7 @@ htDoc ← "
 <body>
   <h1>proglangbase</h1>
   <table>
-"∾(HtTableFromArray array.plb_lang_data)∾"  </table>
+"∾(HtTableFromArray plbarray.PlbArray •args)∾"  </table>
 </body>
 </html>
 "
