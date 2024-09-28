@@ -6,33 +6,33 @@
 -include("../../dep/plbcom/code/erlang/filename.hrl").
 -include("../../dep/plbcom/code/erlang/plbnames.hrl").
 
--define(SERVICE_NAME,   ?PLB_NAME_SERVICE_DB).
--define(SERVICE_STRING, atom_to_list(?SERVICE_NAME)).
--define(ROOT_PATH,      ?DIRNAME_SOURCE++"/../..").
--define(LOG_PATH,       io_lib:format("~s/log/~s.log", [?ROOT_PATH, ?SERVICE_STRING])).
--define(BQN_CMD,        io_lib:format("bqn ~s/code/array/plbhtml.bqn", [?ROOT_PATH])).
--define(HTML_CMD_FMT,   ?BQN_CMD ++ " ~p").
+-define(NAME_SERVICE_ATOM,    ?PLB_NAME_SERVICE_DB).
+-define(NAME_SERVICE_STRING,  atom_to_list(?NAME_SERVICE_ATOM)).
+-define(PATH_SOURCE,          ?DIRNAME_SOURCE++"/../..").
+-define(PATH_LOG,             io_lib:format("~s/log/~s.log",
+                                [?PATH_SOURCE, ?NAME_SERVICE_STRING])).
+-define(CMD_BQN,              io_lib:format("bqn ~s/code/array/plbhtml.bqn ",
+                                [?PATH_SOURCE])).
 
 acquire() -> acquire(?MODULE).
 
 acquire(Module) ->
-  case global:whereis_name(?SERVICE_NAME) of
+  case global:whereis_name(?NAME_SERVICE_ATOM) of
     Pid when is_pid(Pid) -> Pid;
     _ -> init(Module)
   end.
 
 init(Module) ->
-  filelib:ensure_dir(?LOG_PATH),
-  Log = logger(?LOG_PATH),
+  filelib:ensure_dir(?PATH_LOG),
+  Log = logger(?PATH_LOG),
   Log("~s:start", [Module]),
   spawn(?MODULE, start, [Module]).
 
-html(Route) ->
-  os:cmd(io_lib:format(?HTML_CMD_FMT, [Route])).
+html(Route) -> os:cmd(?CMD_BQN++Route).
 
 logger(Path) ->
   {ok, Log} = file:open(Path, [append]),
-  Prefix    = io_lib:format(?SERVICE_STRING++" ~p: ", [self()]),
+  Prefix    = io_lib:format(?NAME_SERVICE_STRING++" ~p: ", [self()]),
   fun(Format, Values) when is_list(Values) ->
     io:format(Log, Prefix++Format++"~n", Values)
   end.
@@ -51,11 +51,11 @@ looper(Log, Module) ->
   end.
 
 start(Module) ->
-  Log = logger(?LOG_PATH),
+  Log = logger(?PATH_LOG),
   Log("connecting to ~s", [?PLB_NAME_NODE_WEB]),
   try
     plb_ctl:connect_node(?PLB_NAME_NODE_WEB, ?PLB_COOKIE_NODE_WEB),
-    global:register_name(?SERVICE_NAME, self()),
+    global:register_name(?NAME_SERVICE_ATOM, self()),
     Log("service started", []),
     Loop = looper(Log, Module),
     Loop()
