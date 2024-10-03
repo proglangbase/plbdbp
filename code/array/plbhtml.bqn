@@ -10,28 +10,38 @@
 #
 plbarray ← •Import "plbarray.bqn"
 
-nl                    ← @+10
+nl ← @+10
 
-HtAttrHref            ← "href="∾'"'∾∾⟜'"'
-HtRouteIndex          ← "/"⊸∾(•Fmt⊢)
-HtTagAttr             ← (("<"⊸∾⊣)∾⟜' ')∾(∾⟜">"⊢)
-HtTagAnchor           ← "a" HtTagAttr HtAttrHref
-HtWrapAnchor          ← (HtTagAnchor⊣)∾(∾⟜"</a>"⊢)
-HtWrapTableData       ← "<td>"⊸∾∾⟜"</td>"
-HtWrapTableRow        ← "    <tr>"⊸∾∾⟜("</tr>"∾nl)
-HtWrapTableRowAnchor  ← {<∘((HtRouteIndex𝕨)⊸HtWrapAnchor)⚇1∘⊑𝕩}
-#HtWrapTableRowAnchor  ← <∘((HtRouteIndex⊣)⊸HtWrapAnchor)⚇1∘⊑⊢
-  # ^ @@@ TODO CANNOT FIGURE OUT HOW TO MAKE THIS TACIT
-HtWrapTableRowData    ← ∾HtWrapTableData⚇1∘<∘(HtWrapTableRowAnchor∾1⊸↓)
-HtWrapTableIndexedRow ← HtWrapTableRow⚇1∘<∘∾∘HtWrapTableRowData
-IndexedRows           ← ↕∘≠⋈˘⊢
-HtWrapTableRows       ← ((⊑·>1⊸↑)HtWrapTableIndexedRow(⊑1⊸↓))˘IndexedRows
-HtTableFromArray      ← ∾HtWrapTableRows
+HtRouteIndex  ← "/"⊸∾•Fmt
+HtAttrHref    ← "href="∾'"'∾∾⟜'"'
+HtTagWithAttr ← (("<"⊸∾⊣)∾⟜' ')∾(∾⟜">"⊢)
+HtTagA        ← "a" HtTagWithAttr HtAttrHref
+HtWrapTagA    ← (HtTagA⊣)∾(∾⟜"</a>"⊢)
+HtWrapTagTd   ← "<td>"⊸∾∾⟜"</td>"
+HtWrapTagTr   ← "      <tr>"⊸∾∾⟜("</tr>"∾nl)
+HtWrapAnchor  ← (⊣(HtRouteIndex⊣)⊸HtWrapTagA)⚇1
+HtWrapStyle   ← {
+   "reg"𝕊𝕩: (plbarray.PlbArrayRowI HtWrapAnchor plbarray.PlbArrayItem)𝕩
+  ;    𝕨𝕊𝕩:                                     plbarray.PlbArrayItem 𝕩
+}
+
+HtTableItem         ← plbarray.PlbArrayStyle HtWrapStyle ⊢
+HtTableData         ← HtWrapTagTd⚇1∘HtTableItem
+HtTableRow          ← <∘HtWrapTagTr∘∾(HtTableData˘)
+HtTableFromPlbArray ← ∾·HtTableRow˘⊢
+
+htTable ← HtTableFromPlbArray plbarray.PlbArray •args
+#•Show   htTable
+#•Show ≢ htTable
+#•Show ≠ htTable
+#•Show ≡ htTable
+#•Exit 0
 
 htDoc ← "
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="∾'"'∾"UTF-8"∾'"'∾">
   <title>proglangbase</title>
   <style>
     body {
@@ -74,7 +84,7 @@ htDoc ← "
   </header>
   <main>
     <table>
-"∾(HtTableFromArray plbarray.PlbArray •args)∾"  </table>
+"∾htTable∾"    </table>
   </main>
 </body>
 </html>
