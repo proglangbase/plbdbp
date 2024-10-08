@@ -8,6 +8,8 @@
 #   ˜˘¨⁼⌜´˝7∞¯•÷×   ¬⎉⚇⍟◶⊘⎊⍎⍕⟨⟩√⋆   ⌽𝕨∊↑∧y⊔⊏⊐π←→    ↙𝕎⍷𝕣⍋YU⊑⊒⍳⊣⊢
 #   ⍉𝕤↕𝕗𝕘⊸∘○⟜⋄↩\    ↖𝕊D𝔽𝔾«J⌾»·˙|    ⥊𝕩↓∨⌊n≡∾≍≠      ⋈𝕏C⍒⌈N≢≤≥⇐
 #
+#   ShowWX ← { •Show 𝕨 ⋄ •Show 𝕩 }
+#
 ⟨ PA ⇐ PlbArray,
   PI ⇐ PlbArrayItem,
   PR ⇐ PlbArrayRowI,
@@ -18,21 +20,23 @@
 nl ← @+10
 
 HtRouteIndex  ← "/"⊸∾•Fmt
+HtAttrClass   ← "class="∾'"'∾∾⟜'"'
 HtAttrHref    ← "href="∾'"'∾∾⟜'"'
 HtTagWithAttr ← (("<"⊸∾⊣)∾⟜' ')∾(∾⟜">"⊢)
-HtTagA        ← "a" HtTagWithAttr HtAttrHref
+HtTagA        ← "a"   HtTagWithAttr HtAttrHref
+HtTagTd       ← "td"  HtTagWithAttr HtAttrClass
 HtWrapTagA    ← (HtTagA⊣)∾(∾⟜"</a>"⊢)
-HtWrapTagTd   ← "<td>"⊸∾∾⟜"</td>"
+HtWrapTagTd   ← (HtTagTd⊣)∾(∾⟜"</td>"⊢)
 HtWrapTagTr   ← "      <tr>"⊸∾∾⟜("</tr>"∾nl)
 HtWrapAnchor  ← (⊣(HtRouteIndex⊣)⊸HtWrapTagA)⚇1
 
 CharInStyle     ← ⊣∊(" "⊸∾PS⊢)
-HtStylizeAnchor ← {>((PR𝕨)HtWrapAnchor𝕩)⍟('r'⊸CharInStyle𝕨)𝕩}
-#HtStylizeAnchor ← >((PR⊣)HtWrapAnchor⊢)⍟('r'⊸CharInStyle⊣)⊢
-HtStylizeItem   ← HtStylizeAnchor
+ClassFromStyle  ← (⊑'i'⊸CharInStyle)◶⟨"def","ind"⟩
+HtAnchorIfStyle ← {>((PR𝕨)HtWrapAnchor𝕩)⍟('r'⊸CharInStyle𝕨)𝕩}
+##HtStylizeAnchor ← >((PR⊣)HtWrapAnchor⊢)⍟('r'⊸CharInStyle⊣)⊢
+##  TODO: ^ TACIT FORM IS WRONG
 
-HtTableItem         ← ⊢ HtStylizeItem PI
-HtTableData         ← HtWrapTagTd⚇1∘HtTableItem
+HtTableData         ← (ClassFromStyle∘⊣ HtWrapTagTd⚇1 ⊢)⟜(⊢ HtAnchorIfStyle PI)
 HtTableRow          ← <∘HtWrapTagTr∘∾(HtTableData˘)
 HtTableFromPlbArray ← ∾·HtTableRow˘⊢
 
@@ -58,8 +62,8 @@ htDoc ← "
     }
     h1 {
       color:            white;
-      font-size:        1.0rem;
-      padding:          0.3rem;
+      font-size:        1.0em;
+      padding:          0.3em;
       margin:           0;
       text-align:       center;
     }
@@ -71,14 +75,20 @@ htDoc ← "
       top:              0;
     }
     main {
-      margin-top:       1.8rem;
+      margin-top:       1.8em;
     }
     td {
       outline:          dotted white;
     }
-    th, td {
-      font-size:        0.8rem;
-      padding:          0.2rem;
+    td.def {
+    }
+    td.ind {
+      background-color: white;
+      padding-left:     1.0em;
+    }
+    td, th {
+      font-size:        0.8em;
+      padding:          0.2em;
     }
     th {
       outline:          solid white;
