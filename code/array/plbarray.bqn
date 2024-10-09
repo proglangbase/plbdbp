@@ -72,7 +72,7 @@ plb_lang_data ← ⟨∘,≠plb_lang_head⟩ ⥊ plb_lang_head ∾ ⟨
   "Zig"           ,""             ,"C"            ,""     ,"p"    ,"ss"   ,"ct"   ,"alo"  ,""
 ⟩
 plb_gene_style ← ⟨
-  "ri"            ,""             ,""             ,""     ,""     ,""     ,""     ,""     ,""
+  "i"             ,""             ,""             ,""     ,""     ,""     ,""     ,""     ,""
 ⟩
 plb_gene_head ← ⟨
   "lang"         ,"gene"          ,"aka"          ,"year" ,"para" ,"type" ,"mac"  ,"mem"  ,""
@@ -165,10 +165,10 @@ TableLayered  ← {
 plb_root ← ⍉ plb_lang_style TableLayered plb_lang_data
 
 PlbArray ⇐ {
-    ⟨"/"⟩: plb_root
+    "/": plb_root
   ; 𝕩:
     #•Show 𝕩
-    i ← •BQN 1↓⊑𝕩
+    i ← •BQN 1↓𝕩
     lang ← ⊑i⊏plb_lang_data
     genedat ← (lang≡⊑)˘⊸/plb_gene_data
     genetab ← ⍉ plb_gene_style TableLayered genedat
@@ -179,7 +179,7 @@ PlbArray ⇐ {
     #•Show (i+1)↑plb_root
     #•Show ≢(i+1)↑plb_root
     #•Show ≢plb_root
-    ((i+1)↑plb_root)∾genetab∾i↓plb_root
+    (i+1)(↑(⊣∾genetab∾⊢)↓)plb_root
 }
 
 PlbArrayItem  ⇐  0⊸⊏

@@ -20,8 +20,8 @@
 nl ← @+10
 
 HtRouteIndex  ← "/"⊸∾•Fmt
-HtAttrClass   ← "class="∾'"'∾∾⟜'"'
-HtAttrHref    ← "href="∾'"'∾∾⟜'"'
+HtAttrClass   ← "class="""∾∾⟜'"'
+HtAttrHref    ← "href="""∾∾⟜'"'
 HtTagWithAttr ← (("<"⊸∾⊣)∾⟜' ')∾(∾⟜">"⊢)
 HtTagA        ← "a"   HtTagWithAttr HtAttrHref
 HtTagTd       ← "td"  HtTagWithAttr HtAttrClass
@@ -40,7 +40,8 @@ HtTableData         ← (ClassFromStyle∘⊣ HtWrapTagTd⚇1 ⊢)⟜(⊢ HtAnch
 HtTableRow          ← <∘HtWrapTagTr∘∾(HtTableData˘)
 HtTableFromPlbArray ← ∾·HtTableRow˘⊢
 
-htTable ← HtTableFromPlbArray PA •args
+url     ← ⊑•args
+htTable ← HtTableFromPlbArray PA url
 #•Show   htTable
 #•Show ≢ htTable
 #•Show ≠ htTable
@@ -51,44 +52,66 @@ htDoc ← "
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="∾'"'∾"UTF-8"∾'"'∾">
+  <meta charset=""UTF-8"">
   <title>proglangbase</title>
   <style>
+    a {
+      font-weight:      bold;
+    }
     body {
-      background-color: lightgray;
+      background-color: #bfbfbf;
       font-family:      Arial, Helvetica, sans-serif;
       margin:           0;
       padding:          0;
     }
-    h1 {
-      color:            white;
-      font-size:        1.0em;
-      padding:          0.3em;
-      margin:           0;
-      text-align:       center;
-    }
     header {
-      background-color: gray;
+      background-color: #7f7f7f;
       position:         fixed;
       width:            100%;
-      padding:          0;
+      padding-bottom:   0.5em;
+      padding-top:      0.5em;
       top:              0;
     }
+    header h1 {
+      color:            #cfcfcf;
+      display:          inline;
+      font-size:        1.0em;
+      margin:           0;
+      padding-left:     1.0em;
+      padding-right:    0.5em;
+    }
+    header a {
+      background-color: #bfbfbf;
+      color:            #7f3f00;
+      font-size:        1.0em;
+      margin-left:      0.5em;
+      margin-right:     0.5em;
+      padding-left:     0.5em;
+      padding-right:    0.5em;
+      text-decoration:  none;
+    }
     main {
-      margin-top:       1.8em;
+      margin-top:       2.2em;
     }
     td {
-      outline:          dotted white;
+      outline:          dotted #9f9f9f;
+    }
+    td a {
+      color:            #7f3f00;
+      text-decoration:  none;
     }
     td.def {
     }
     td.ind {
-      background-color: white;
+      background-color: #cfcfcf;
       padding-left:     1.0em;
     }
     td, th {
       font-size:        0.8em;
-      padding:          0.2em;
+      padding-bottom:   0.2em;
+      padding-left:     0.3em;
+      padding-right:    0.5em;
+      padding-top:      0.2em;
     }
     th {
       outline:          solid white;
@@ -97,6 +120,8 @@ htDoc ← "
 <body>
   <header>
     <h1>proglangbase</h1>
+    <a href=""/"">/</a>
+    <a href="""∾url∾""">"∾url∾"</a>
   </header>
   <main>
     <table>
